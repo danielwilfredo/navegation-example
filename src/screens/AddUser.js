@@ -1,30 +1,19 @@
-//using https://retool.com/api-generator#iframe-section 
-
-//la siguiente direccion: https://retoolapi.dev/zZhXYF/movil
-
-/*
-información de la api
-{
-id: 1,
-edad: 84,
-correo: "-",
-nombre: "Filippa Gwillim"
-},
-*/// AddUser.js
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  Alert,
-  ScrollView
-} from 'react-native';
+  ScrollView,
+} from "react-native";
+import { useRoute } from "@react-navigation/native";
+import useFetchUser from "../hooks/useFetchUser";
 
-import useFetchUser from '../hooks/useFetchUser';
+const AddUser = ({ navigation }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUser, setEditingUser] = useState(null); // Nuevo estado para el usuario recibido
 
-const AddUser = () => {
   const {
     nombre,
     edad,
@@ -32,43 +21,99 @@ const AddUser = () => {
     setNombre,
     setEdad,
     setCorreo,
-    handleGuardar
+    handleGuardar,
+    cleanState,
   } = useFetchUser();
+
+  const route = useRoute();
+
+  useEffect(() => {
+    const userFromParams = route.params?.user;
+
+    if (userFromParams) {
+      console.log("✅ Usuario recibido:", userFromParams);
+      setNombre(userFromParams.nombre || "");
+      setEdad(String(userFromParams.edad || ""));
+      setCorreo(userFromParams.correo || "");
+      setEditingUser(userFromParams);
+      setIsEditing(true);
+    } else {
+      console.log("⚠️ No se recibió el usuario desde la navegación");
+      setEditingUser(null);
+      setIsEditing(false);
+    }
+  }, [route.params]);
+
+  const irShowUser = () => {
+    navigation.navigate("ShowUser");
+  };
+
+  const cleanForm = () => {
+    cleanState();
+    setEditingUser(null);
+    setIsEditing(false);
+    irShowUser();
+  };
+
+  const handleSaveform = () => {
+    handleGuardar(editingUser);
+    setIsEditing(false);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Agregar Usuario</Text>
+      <Text style={styles.title}>
+        {isEditing ? "Editar Usuario" : "Agregar Usuario"}
+      </Text>
       <Text style={styles.subtitle}>
-        Ingresa la información del nuevo usuario
+        {isEditing
+          ? "Modifica la información del usuario seleccionado"
+          : "Ingresa la información del nuevo usuario"}
       </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre"
-        value={nombre}
-        onChangeText={setNombre}
-        placeholderTextColor="#A1866F"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Edad"
-        value={edad}
-        onChangeText={setEdad}
-        keyboardType="numeric"
-        placeholderTextColor="#A1866F"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Correo"
-        value={correo}
-        onChangeText={setCorreo}
-        keyboardType="email-address"
-        placeholderTextColor="#A1866F"
-      />
+      <View style={styles.formCard}>
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre"
+          value={nombre}
+          onChangeText={setNombre}
+          placeholderTextColor="#A1866F"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Edad"
+          value={edad}
+          onChangeText={setEdad}
+          keyboardType="numeric"
+          placeholderTextColor="#A1866F"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Correo"
+          value={correo}
+          onChangeText={setCorreo}
+          keyboardType="email-address"
+          placeholderTextColor="#A1866F"
+        />
 
-      <TouchableOpacity style={styles.button} onPress={handleGuardar}>
-        <Text style={styles.buttonText}>Guardar</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSaveform}>
+          <Text style={styles.buttonText}>
+            {isEditing ? "Editar" : "Guardar"}
+          </Text>
+        </TouchableOpacity>
+
+        {isEditing && (
+          <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: "#B00020", marginTop: 10 },
+            ]}
+            onPress={cleanForm}
+          >
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -76,46 +121,61 @@ const AddUser = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#EAD8C0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20
+    backgroundColor: "#FAF4EF",
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 10,
-    color: '#5C3D2E'
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#3C2A21",
+    marginBottom: 10,
+    textAlign: "center",
   },
   subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#5C3D2E'
+    fontSize: 16,
+    color: "#7B5E57",
+    textAlign: "center",
+    marginBottom: 25,
+  },
+  formCard: {
+    width: "100%",
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    padding: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   input: {
-    width: '100%',
     borderWidth: 1,
-    borderColor: '#5C3D2E',
+    borderColor: "#D3B8AE",
     borderRadius: 8,
     padding: 12,
-    marginVertical: 10,
-    backgroundColor: '#FFF',
-    color: '#000'
+    marginBottom: 15,
+    backgroundColor: "#FFF",
+    color: "#333",
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#5C3D2E',
-    padding: 15,
-    borderRadius: 10,
-    width: '100%',
-    marginTop: 20
+    backgroundColor: "#5C3D2E",
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    alignItems: "center",
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
 
 export default AddUser;

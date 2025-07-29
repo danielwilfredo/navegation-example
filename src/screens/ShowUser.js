@@ -26,8 +26,8 @@ import CardUser from "../components/Users/CardUser";
 import useFetchUser from "../hooks/useFetchUser";
 import { useFocusEffect } from "@react-navigation/native";
 
-const ShowUser = () => {
-  const { usuarios, loading, fetchUsuarios } = useFetchUser();
+const ShowUser = ({ navigation }) => {
+  const { usuarios, loading, fetchUsuarios, deleteUser } = useFetchUser();
 
   // Se ejecuta cada vez que esta pantalla se enfoca
   useFocusEffect(
@@ -35,6 +35,11 @@ const ShowUser = () => {
       fetchUsuarios();
     }, [])
   );
+
+  
+const irEditar = (user) => {
+  navigation.navigate("AddUser", { user });
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +64,9 @@ const ShowUser = () => {
         <FlatList
           data={usuarios}
           keyExtractor={(user) => user.id.toString()}
-          renderItem={({ item }) => <CardUser user={item} />}
+          renderItem={({ item }) => (
+            <CardUser user={item} irEditar={irEditar} deleteUser={deleteUser} />
+          )}
           contentContainerStyle={styles.listContainer}
         />
       )}
