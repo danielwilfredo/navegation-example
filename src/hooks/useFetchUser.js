@@ -33,42 +33,7 @@ const useFetchUser = () => {
     }
   };
 
-  // Guardar nuevo usuario en la API
-
-  /*
-  const handleGuardar = async () => {
-    if (!nombre || !edad || !correo) {
-      Alert.alert("Error", "Por favor, completa todos los campos");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://retoolapi.dev/zZhXYF/movil", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre,
-          edad: parseInt(edad),
-          correo,
-        }),
-      });
-
-      if (response.ok) {
-        Alert.alert("Éxito", "Usuario guardado correctamente");
-        setNombre("");
-        setEdad("");
-        setCorreo("");
-        fetchUsuarios(); // Actualizar lista
-      } else {
-        Alert.alert("Error", "No se pudo guardar el usuario");
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Ocurrió un error al enviar los datos");
-    }
-  };*/
+  // Guardar nuevo usuario en la API o editar 
 
   const handleGuardar = async (user) => {
     if (!nombre || !edad || !correo) {
@@ -104,7 +69,7 @@ const useFetchUser = () => {
           Alert.alert("Error", "No se pudo actualizar el usuario");
         }
       } else {
-        // ➕ Crear nuevo usuario
+        // Crear nuevo usuario
         response = await fetch("https://retoolapi.dev/zZhXYF/movil", {
           method: "POST",
           headers: {

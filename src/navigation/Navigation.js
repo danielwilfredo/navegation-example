@@ -5,6 +5,7 @@ import Home from '../screens/Home.js'; // Importa la pantalla de Sesión
 import ShowUser from '../screens/ShowUser.js'; // Importa la pantalla de Sesión
 import AddUser from '../screens/AddUser.js'; // Importa la pantalla de Sesión
 import TabNavigator from './TabNavigator'; // Importa el navegador de pestañas
+import LoginScreen from '../screens/LoginScreen.js';
 
 export default function Navigation() {
 
@@ -13,11 +14,12 @@ export default function Navigation() {
   return (
     <NavigationContainer> 
       <Stack.Navigator
-        initialRouteName='TabNavigator' // Establece 'Sesion' como la ruta inicial
-        screenOptions={{
-          headerShown: false // Oculta el header por defecto
-        }}>
+        initialRouteName='Login' 
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="Login" component={LoginScreen} /> 
         <Stack.Screen name="Home" component={Home} /> 
+
         <Stack.Screen name="ShowUser" component={ShowUser} /> 
         <Stack.Screen name="AddUsers" component={AddUser} /> 
         <Stack.Screen name="TabNavigator" component={TabNavigator} /> 

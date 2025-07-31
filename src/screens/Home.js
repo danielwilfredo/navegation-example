@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import Buttons from '../components/Buttons';
 import { useFocusEffect } from '@react-navigation/native';
+import { AuthContext } from "../context/AuthContext"; // Ajusta el path
+
 
 export default function Home({ navigation }) {
-
- 
-
+  const { user } = useContext(AuthContext);
   const irShowUsers = () => {
     navigation.navigate('ShowUser');
   };
@@ -19,7 +19,9 @@ export default function Home({ navigation }) {
         source={require('../../assets/users.png')}
         style={styles.image}
       />
-      <Text style={styles.title}>Bienvenido</Text>
+       <Text style={styles.title}>
+        Bienvenido{user?.name ? `, ${user.name}` : ''}
+      </Text>
       <Text style={styles.subtitle}>
         Esta aplicación nos servirá para comprender como utilizar la navegación y un tab menu en una aplicación móvil de react native
       </Text>
