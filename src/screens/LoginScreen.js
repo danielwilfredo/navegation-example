@@ -1,16 +1,25 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext ,useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { AuthContext } from "../context/AuthContext"; // Ajusta el path
+import { AuthContext } from "../context/AuthContext"; 
 
 const LoginScreen = ({ navigation }) => {
-  const { login } = useContext(AuthContext);
+  const { login, authToken } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  //verificar si ya existe una sesion activa
+  useEffect(() => {
+  if (authToken) {
+    navigation.replace("TabNavigator");
+  }
+}, [authToken]);
+
 
   const handleLogin = async () => {
     const success = await login(email, password);
     if (success) {
-      navigation.replace("TabNavigator"); // o "Home", según tu app
+      navigation.replace("TabNavigator");
     }
   };
 

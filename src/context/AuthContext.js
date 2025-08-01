@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastAndroid } from "react-native";
 
@@ -9,7 +9,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
   const [loading, setLoading] = useState(false);
-  const API_URL = "http://localhost:4000/api";
+  const API_URL = "http://192.168.1.23:4000/api";
+  // la ip de la computadora ya no localhost
+
+  useEffect(() => {
+  const loadToken = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      setAuthToken(token);
+    }
+  };
+  loadToken();
+}, []);
+
 
   const clearSession = async () => {
     await AsyncStorage.removeItem("token");
@@ -28,7 +40,6 @@ export const AuthProvider = ({ children }) => {
     } finally {
       await clearSession();
       ToastAndroid.show("Sesión cerrada correctamente", ToastAndroid.SHORT);
-      // No navegamos aquí, lo hace el componente que lo llama
     }
   }, [API_URL]);
 
@@ -46,7 +57,8 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         await AsyncStorage.setItem("token", data.token);
         setAuthToken(data.token);
-        setUser(data.userId);
+        console.log(data)
+        setUser(data.userName);
         ToastAndroid.show("Inicio de sesión exitoso", ToastAndroid.SHORT);
         return true; // El componente que llama decide redirigir
       } else {

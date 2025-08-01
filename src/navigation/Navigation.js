@@ -6,7 +6,7 @@ import ShowUser from '../screens/ShowUser.js'; // Importa la pantalla de Sesión
 import AddUser from '../screens/AddUser.js'; // Importa la pantalla de Sesión
 import TabNavigator from './TabNavigator'; // Importa el navegador de pestañas
 import LoginScreen from '../screens/LoginScreen.js';
-
+import Products from '../screens/Products.js';
 export default function Navigation() {
 
   const Stack = createNativeStackNavigator(); // Crea una instancia del stack navigator
@@ -19,6 +19,7 @@ export default function Navigation() {
       >
         <Stack.Screen name="Login" component={LoginScreen} /> 
         <Stack.Screen name="Home" component={Home} /> 
+        <Stack.Screen name="Products" component={Products} /> 
 
         <Stack.Screen name="ShowUser" component={ShowUser} /> 
         <Stack.Screen name="AddUsers" component={AddUser} /> 

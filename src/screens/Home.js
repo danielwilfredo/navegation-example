@@ -1,15 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import Buttons from '../components/Buttons';
 import { useFocusEffect } from '@react-navigation/native';
-import { AuthContext } from "../context/AuthContext"; // Ajusta el path
+import { AuthContext } from "../context/AuthContext"; 
 
 
 export default function Home({ navigation }) {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const irShowUsers = () => {
     navigation.navigate('ShowUser');
   };
+
+    const irProducts = () => {
+    navigation.navigate('Products');
+  };
+
+  console.log(user)
+
+const handleLogOut = async () => {
+  await logout(); 
+  /*
+Usamos navigation.reset(...) para reemplazar todo el stack y evitar que el usuario pueda volver atrás al presionar “atrás”.
+*/
+  navigation.reset({
+    index: 0,
+    routes: [{ name: 'Login' }],
+  });
+};
+
 
 
 
@@ -20,7 +38,7 @@ export default function Home({ navigation }) {
         style={styles.image}
       />
        <Text style={styles.title}>
-        Bienvenido{user?.name ? `, ${user.name}` : ''}
+        Bienvenido{user ? `, ${user}` : ''}
       </Text>
       <Text style={styles.subtitle}>
         Esta aplicación nos servirá para comprender como utilizar la navegación y un tab menu en una aplicación móvil de react native
@@ -29,6 +47,16 @@ export default function Home({ navigation }) {
       <Buttons
         text='ver todos los usuarios'
         action={irShowUsers}
+      />
+
+      <Buttons
+        text='Cerrar Sesion'
+        action={handleLogOut}
+      />
+
+            <Buttons
+        text='Ver productos de la tienda'
+        action={irProducts}
       />
     </View>
   );
